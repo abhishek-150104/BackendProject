@@ -26,3 +26,14 @@ verifySignature:{
 
 
     Both bcrypt and jwt is based on cryptography
+
+
+  HTTP 
+
+
+
+
+
+
+    ========****======MINOR CHANGES======******======
+    file name while upload in multer

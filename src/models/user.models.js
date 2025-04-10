@@ -50,12 +50,12 @@ const userSchema = new Schema({
 )
 
 userSchema.pre("save",async function(next) {
-  if(!this.isModified("password")) return; // omly if password is modified or save foe first time
+  if(!this.isModified("password")) return; // only if password is modified or save for first time
   this.password=bcrypt.hash(this.password,10)
   next()
-})   // just before saving data on Databse do these   
-// cant use () => {} as arrow function doesn't have refernce of this / context
-//It is async because encryption takes time
+})//                                  just before saving data on Databse do these   
+//                                    cant use () => {} as arrow function doesn't have refernce of this / context
+//                                    It is async because encryption takes time
 
 //bcrypt.hash(what_to_hash,rounds)
 
