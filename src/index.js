@@ -4,10 +4,12 @@ import dotenv from "dotenv"
 
 // import mongoose from "mongoose";
 // import { DB_NAME } from "./constants.js";
+
 // import express from "express"
 import connectDB from "./db/db.js";
+import { app } from "./app.js";
 
-
+// const app = express();
 dotenv.config({
   path:'./env'
 })
@@ -15,7 +17,7 @@ dotenv.config({
 connectDB()
 .then(()=>{
   app.listen(process.env.PORT||8000,()=>{
-    console.log("Serever Running at Port",process.env.port)
+    console.log("Serever Running at Port",process.env.PORT)
   })
 })
 .catch((err)=>{
@@ -23,40 +25,6 @@ connectDB()
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const app = express();
 
 // (async ()=>{
 //   try{
