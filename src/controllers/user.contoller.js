@@ -19,10 +19,12 @@ const registerUser = asyncHandler( async (req,res)=>{
  const{fullName,email,username,password}=req.body;
  console.log("email:",email)
 
+  
+
  if(fullName=="" || email=="" || password==""){
   const missingFields =[];
 
-  if(!fullName) missingFields.push("fullNmae");
+  if(!fullName) missingFields.push("fullName");
   if(!email) missingFields.push("emial");
   if(!password) missingFields.push("password");
   if(!username) missingFields.push("username");
@@ -35,32 +37,40 @@ const registerUser = asyncHandler( async (req,res)=>{
  }
 
 //  User.findOne({email}) only checks one fields
-    const existedUser=User.findOne({
+    const existedUser= await User.findOne({
       $or:[{username} , {email}]
     })
 
-    if(!existedUser){
+    console.log(existedUser)
+
+    if(existedUser!=null){
       throw new ApiError(409,"User Already exists")
     }
+    console.log(req.files)
 
   const avatarlocalPath = req.files?.avatar[0]?.path;
-  const coverImagelocalPath = req.files?.coverImage[0]?.path;
+  
+  let coverImagelocalPath;
+  if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
+    coverImagelocalPath=req.files.coverImage[0]?.path
+  }
+
   if(!avatarlocalPath){
     throw new ApiError(400,"Avatar file is needed")
   }
-
+  
   const avatar = await uploadOnCloundinary(avatarlocalPath)
-  const coberImage = await uploadOnCloundinary(coverImagelocalPath)
+  const coverImage = await uploadOnCloundinary(coverImagelocalPath)
 
   if(!avatar){
     throw new ApiError(400,"Avatar file is needed")
   }
 
 
-  const user = User.create({
+  const user = await User.create({
     fullName,
     avatar:avatar.url,
-    coverImage:coberImage?.url || "",
+    coverImage:coverImage?.url==null? "" : coverImage?.url,
     email,
     password,
     username:username.toLowerCase()
@@ -71,6 +81,11 @@ const registerUser = asyncHandler( async (req,res)=>{
 .select(
   "-password -refreshToken"
   )
+  
+
+  
+  
+
 
   if(!createdUser){
     throw new ApiError(500,"Something went error while registering user")

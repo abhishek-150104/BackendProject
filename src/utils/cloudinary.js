@@ -2,7 +2,7 @@ import cloudinary from "cloudinary";
 import fs from "fs";// file system of node js . it is in node js by default . read ,write and permission and more 
 // unlinking a path means unlinkinf the file(similar to delete but not exactly delete)
 
-import { v2 as cloudinary } from 'cloudinary';
+// import { cloudinary } from 'cloudinary';
 
 
 cloudinary.config({ 
@@ -21,6 +21,7 @@ const uploadOnCloundinary = async (localFilePath) => {
       resource_type : "auto"
     })
     console.log("File uploaded successfully", response.url);
+    fs.unlinkSync(localFilePath)
     return response;
   }
   catch (error){
