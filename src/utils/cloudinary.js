@@ -21,6 +21,7 @@ const uploadOnCloundinary = async (localFilePath) => {
       resource_type : "auto"
     })
     console.log("File uploaded successfully", response.url);
+    return response;
   }
   catch (error){
     // if error has occred it means that file upload has stoped or wasn't able to upload . There is also a chance that some parts of file has been uploaded

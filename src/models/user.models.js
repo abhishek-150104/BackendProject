@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
   username: {
@@ -51,7 +52,7 @@ const userSchema = new Schema({
 
 userSchema.pre("save",async function(next) {
   if(!this.isModified("password")) return; // only if password is modified or save for first time
-  this.password=bcrypt.hash(this.password,10)
+  this.password=await bcrypt.hash(this.password,10)
   next()
 })//                                  just before saving data on Databse do these   
 //                                    cant use () => {} as arrow function doesn't have refernce of this / context
@@ -78,7 +79,7 @@ userSchema.methods.generateAccessToken = function(){
     }
   )
 }
-serSchema.methods.generateRefreshToken = function(){
+userSchema.methods.generateRefreshToken = function(){
   jwt.sign(
     {
       _id:this.id
