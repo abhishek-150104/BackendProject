@@ -29,14 +29,15 @@ const registerUser = asyncHandler( async (req,res)=>{
   if(!password) missingFields.push("password");
   if(!username) missingFields.push("username");
 
-
-  const message = `The missing Fields are ${missingFields.join(",")}`
+ 
+  const message = `The missing Fields are ${missingFields.join(",")}` // printing all that is misssing
 
   throw new ApiError(400,message);
   
  }
 
 //  User.findOne({email}) only checks one fields
+// whenever interacting with database we will use await as we consider it may take time to fetch 
     const existedUser= await User.findOne({
       $or:[{username} , {email}]
     })
@@ -79,12 +80,8 @@ const registerUser = asyncHandler( async (req,res)=>{
 
   const createdUser = await User.findById(user._id)
 .select(
-  "-password -refreshToken"
+  "-password -refreshToken"    //remove the fields that is not needed
   )
-  
-
-  
-  
 
 
   if(!createdUser){
