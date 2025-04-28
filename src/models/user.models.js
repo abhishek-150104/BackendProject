@@ -17,7 +17,7 @@ const userSchema = new Schema({
     required: true,
     unique: true,
     lowercase : true,
-    trime:true
+    trim:true
   },
   fullName:{
     type: String,
@@ -54,7 +54,8 @@ userSchema.pre("save",async function(next) {
   if(!this.isModified("password")) return; // only if password is modified or save for first time
   this.password=await bcrypt.hash(this.password,10)
   next()
-})//                                  just before saving data on Databse do these   
+})
+//                                  just before saving data on Databse do these   
 //                                    cant use () => {} as arrow function doesn't have refernce of this / context
 //                                    It is async because encryption takes time
 
@@ -66,12 +67,16 @@ userSchema.methods.isPassword = async function(password){
 }
 
 
-userSchema.methods.generateAccessToken = function(){
-  jwt.sign(
+//Only differennce between the tokens are there expiry time
+//Access Token are generally short lived
+//If you have a access token then which ever feature that requires a authentication can be accessed with access token . //
+//As it is short lived we need to login again and again to avoid this then comes in picture "Refresh Token" both the user and database has these token even then access token is necessary to validate . So one can hit the endpoint and if both the refresh token matches an access token is provided. 
+userSchema.methods.generateAccessToken= function(){
+  return jwt.sign(
     {
       _id:this.id,
       email: this.email,
-      fullName:this>fullName
+      fullName:this.fullName
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -79,8 +84,10 @@ userSchema.methods.generateAccessToken = function(){
     }
   )
 }
+
+//Referesh token have longer expiry time
 userSchema.methods.generateRefreshToken = function(){
-  jwt.sign(
+  return jwt.sign(
     {
       _id:this.id
     },
